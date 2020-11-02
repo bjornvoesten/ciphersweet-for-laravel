@@ -1,17 +1,16 @@
-RED='\033[0;31m'
-GREEN='\033[0;32m'
+#!/bin/bash
 
-# Get the version
-NEW_VERSION=$(cat .version)
+# Prompt the version
+read -p "Version: " version
 
 # Check if the version already exists
-if [ $(git tag -l "$NEW_VERSION") ]; then
-    echo "${RED}Version already exists!"
+if [ $(git tag -l "$version") ]; then
+    echo "Version already exists!"
     exit
 fi
 
 # Create and push the tag
-git tag $NEW_VERSION
+git tag $version
 git push --tags
 
-echo "${GREEN}Done."
+echo "Done."
