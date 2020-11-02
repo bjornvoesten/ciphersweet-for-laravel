@@ -95,6 +95,12 @@ class User extends Model
 }
 ```
 
+### Encrypt and decrypt
+
+Attributes will be automatically encrypted and decrypted when filling and retrieving attribute values.
+
+**Note** Because the package uses Laravel casts it is not possible to combine the `Encrypted` cast and accessors/mutators.  
+
 ### Searching
 
 **Note** When searching with the `equal to` operator models will be returned when the value is found in one of all available or defined indexes. When searching with the `not equal to` operator all models where the value is not found in any of the available or the defined indexes are returned. 
