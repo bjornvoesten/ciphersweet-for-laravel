@@ -1,0 +1,40 @@
+{
+    "name": "bjorn-voesten/ciphersweet-for-laravel",
+    "description": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bjorn Voesten",
+            "email": "bjorn-voesten@live.nl"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "BjornVoesten\\CipherSweet\\": "src/",
+            "BjornVoesten\\CipherSweet\\Seeds\\": "database/seeds/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.2.5",
+        "illuminate/config": "^7.0|^8.0",
+        "illuminate/support": "^7.0|^8.0",
+        "illuminate/database": "^7.0|^8.0",
+        "paragonie/ciphersweet": "^2.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.0|^6.0",
+        "phpunit/phpunit": "^9.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "BjornVoesten\\CipherSweet\\CipherSweetServiceProvider"
+            ]
+        }
+    }
+}
