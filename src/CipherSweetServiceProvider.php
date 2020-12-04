@@ -36,7 +36,7 @@ class CipherSweetServiceProvider extends ServiceProvider
     {
         // Config
         $this->publishes([
-            __DIR__ . '/../config/ciphersweet.php',
+            __DIR__ . '/../config/ciphersweet.php' => config_path('ciphersweet.php')
         ], 'ciphersweet-config');
 
         $this->mergeConfigFrom(
