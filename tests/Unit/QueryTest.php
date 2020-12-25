@@ -98,4 +98,118 @@ class QueryTest extends TestCase
             ])
             ->get();
     }
+
+    public function testCanQueryEncryptedAttributeWithWhereInClause(): void
+    {
+        $userOne = $this->user('123-456-789');
+        $userTwo = $this->user('789-456-123');
+        $userThree = $this->user('456-789-123');
+
+        // Assert success.
+        /** @var \Illuminate\Database\Eloquent\Collection $keys */
+        $keys = User::query()
+            ->whereInEncrypted(
+                'social_security_number',
+                [
+                    '123-456-789',
+                    '789-456-123',
+                ]
+            )
+            ->get()
+            ->modelKeys();
+
+        $this->assertContains($userOne->id, $keys);
+        $this->assertContains($userTwo->id, $keys);
+        $this->assertNotContains($userThree->id, $keys);
+
+        // Assert success using provided index.
+        /** @var \Illuminate\Database\Eloquent\Collection $keys */
+        $keys = User::query()
+            ->whereInEncrypted(
+                'social_security_number',
+                [
+                    '123-456-789',
+                    '789-456-123',
+                ],
+                ['social_security_number_index']
+            )
+            ->get()
+            ->modelKeys();
+
+        $this->assertContains($userOne->id, $keys);
+        $this->assertContains($userTwo->id, $keys);
+        $this->assertNotContains($userThree->id, $keys);
+
+        $keys = User::query()
+            ->whereInEncrypted(
+                'social_security_number',
+                ['789-456-123'],
+                ['non_existing_index']
+            )
+            ->get()
+            ->modelKeys();
+
+        $this->assertEmpty($keys);
+    }
+
+    public function testCanQueryEncryptedAttributeWithOrWhereInClause(): void
+    {
+        $userOne = $this->user('123-456-789');
+        $userTwo = $this->user('789-456-123');
+        $userThree = $this->user('456-789-123');
+
+        // Assert success.
+        /** @var \Illuminate\Database\Eloquent\Collection $keys */
+        $keys = User::query()
+            ->whereInEncrypted(
+                'social_security_number',
+                ['123-456-789']
+            )
+            ->orWhereInEncrypted(
+                'social_security_number',
+                ['789-456-123']
+            )
+            ->get()
+            ->modelKeys();
+
+        $this->assertContains($userOne->id, $keys);
+        $this->assertContains($userTwo->id, $keys);
+        $this->assertNotContains($userThree->id, $keys);
+
+        // Assert success using provided index.
+        /** @var \Illuminate\Database\Eloquent\Collection $keys */
+        $keys = User::query()
+            ->whereInEncrypted(
+                'social_security_number',
+                ['123-456-789'],
+                ['social_security_number_index']
+            )
+            ->orWhereInEncrypted(
+                'social_security_number',
+                ['789-456-123'],
+                ['social_security_number_index']
+            )
+            ->get()
+            ->modelKeys();
+
+        $this->assertContains($userOne->id, $keys);
+        $this->assertContains($userTwo->id, $keys);
+        $this->assertNotContains($userThree->id, $keys);
+
+        $keys = User::query()
+            ->whereInEncrypted(
+                'social_security_number',
+                ['789-456-123'],
+                ['non_existing_index']
+            )
+            ->orWhereInEncrypted(
+                'social_security_number',
+                ['789-456-123'],
+                ['non_existing_index']
+            )
+            ->get()
+            ->modelKeys();
+
+        $this->assertEmpty($keys);
+    }
 }
