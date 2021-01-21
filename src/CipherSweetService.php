@@ -108,23 +108,23 @@ class CipherSweetService
         $field = new EncryptedField(
             $this->engine,
             $table = $model->getTable(),
-            $attribute->column,
+            $attribute->column
         );
 
         // Map and add the indexes to the encrypted
         // field instance.
         collect($attribute->indexes)
-            ->map(function (Index $index) {
-                return $index = new BlindIndex(
+            ->map(static function (Index $index) {
+                return new BlindIndex(
                     $index->column,
                     $index->transformers,
                     $index->bits,
-                    $index->fast,
+                    $index->fast
                 );
             })
-            ->each(
-                fn($index) => $field->addBlindIndex($index)
-            );
+            ->each(static function ($index) use ($field) {
+                return $field->addBlindIndex($index);
+            });
 
         return $field;
     }
@@ -134,18 +134,24 @@ class CipherSweetService
      *
      * @param \Illuminate\Database\Eloquent\Model|\BjornVoesten\CipherSweet\Concerns\WithAttributeEncryption $model
      * @param string $attribute
-     * @param string|int|boolean $value
+     * @param string|int|boolean|null $value
      * @return array
      * @throws \ParagonIE\CipherSweet\Exception\BlindIndexNameCollisionException
      * @throws \ParagonIE\CipherSweet\Exception\BlindIndexNotFoundException
      * @throws \ParagonIE\CipherSweet\Exception\CryptoOperationException
      * @throws \SodiumException
      */
-    public function encrypt(Model $model, string $attribute, $value)
+    public function encrypt(Model $model, string $attribute, $value): array
     {
-        return $this
-            ->field($model, $attribute)
-            ->prepareForStorage($value);
+        $field = $this->field($model, $attribute);
+
+        if (is_null($value)) {
+            return [null, array_map(static function () {
+                return null;
+            }, $field->getAllBlindIndexes(''))];
+        }
+
+        return $field->prepareForStorage($value);
     }
 
     /**
@@ -158,8 +164,12 @@ class CipherSweetService
      * @throws \ParagonIE\CipherSweet\Exception\BlindIndexNameCollisionException
      * @throws \ParagonIE\CipherSweet\Exception\CryptoOperationException
      */
-    public function decrypt(Model $model, string $attribute, $value)
+    public function decrypt(Model $model, string $attribute, $value): ?string
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         return $this
             ->field($model, $attribute)
             ->decryptValue($value);
