@@ -35,12 +35,12 @@ trait WithAttributeEncryption
      * Encrypt the attribute.
      *
      * @param string $attribute
-     * @return string
+     * @return string|null
      */
-    public function decrypt(string $attribute): string
+    public function decrypt(string $attribute): ?string
     {
         return app('ciphersweet')->decrypt(
-            $this, $attribute, $this->attributes[$attribute]
+            $this, $attribute, $this->attributes[$attribute] ?? null
         );
     }
 

@@ -27,12 +27,12 @@ class EncryptionTest extends TestCase
             'social_security_number' => '123-456-789',
         ]);
 
-        $this->assertSame(
+        static::assertSame(
             '123-456-789',
             $user->social_security_number
         );
 
-        $this->assertNotEmpty(
+        static::assertNotEmpty(
             $user->social_security_number_index
         );
     }
@@ -41,12 +41,12 @@ class EncryptionTest extends TestCase
     {
         $user = $this->user('123-456-789');
 
-        $this->assertNotSame(
+        static::assertNotSame(
             '123-456-789',
             $user->getRawOriginal('social_security_number')
         );
 
-        $this->assertNotEmpty(
+        static::assertNotEmpty(
             $user->social_security_number_index
         );
 
@@ -78,12 +78,12 @@ class EncryptionTest extends TestCase
             ])
             ->save();
 
-        $this->assertNotSame(
+        static::assertNotSame(
             '123-456-789',
             $user->getRawOriginal('social_security_number')
         );
 
-        $this->assertNotEmpty(
+        static::assertNotEmpty(
             $user->getAttribute('custom_index')
         );
 
@@ -100,9 +100,29 @@ class EncryptionTest extends TestCase
     {
         $user = $this->user('123-456-789');
 
-        $this->assertSame(
+        static::assertSame(
             '123-456-789',
             $user->getAttribute('social_security_number')
+        );
+    }
+
+    public function testAttributesCanBeMadeNull(): void
+    {
+        $user = $this->user('123-456-789');
+
+        static::assertSame(
+            '123-456-789',
+            $user->social_security_number
+        );
+
+        $user->social_security_number = null;
+
+        static::assertNull(
+            $user->social_security_number
+        );
+
+        static::assertNull(
+            $user->social_security_number_index
         );
     }
 }

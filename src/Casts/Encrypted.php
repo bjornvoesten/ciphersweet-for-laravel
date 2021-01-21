@@ -13,10 +13,10 @@ class Encrypted implements CastsAttributes
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return string
+     * @return string|null
      * @throws \Exception
      */
-    public function get($model, string $key, $value, array $attributes)
+    public function get($model, string $key, $value, array $attributes): ?string
     {
         return $model->decrypt($key);
     }

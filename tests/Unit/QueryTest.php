@@ -32,8 +32,8 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertNotContains($userTwo->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertNotContains($userTwo->id, $keys);
 
         // Assert success using provided index.
         /** @var \Illuminate\Database\Eloquent\Collection $keys */
@@ -44,8 +44,8 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertNotContains($userTwo->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertNotContains($userTwo->id, $keys);
 
         // Assert undefined index exception.
         $this->expectException(Exception::class);
@@ -55,6 +55,22 @@ class QueryTest extends TestCase
                 'non_existing_index',
             ])
             ->get();
+    }
+
+    public function testCanQueryNullableAttributes(): void
+    {
+        $userOne = $this->user('123-456-789');
+        $userTwo = $this->user(null);
+
+        // Assert success.
+        /** @var \Illuminate\Database\Eloquent\Collection $keys */
+        $keys = User::query()
+            ->whereEncrypted('social_security_number', '=', '123-456-789')
+            ->get()
+            ->modelKeys();
+
+        static::assertContains($userOne->id, $keys);
+        static::assertNotContains($userTwo->id, $keys);
     }
 
     public function testCanQueryEncryptedAttributeWithOrWhereClause(): void
@@ -71,9 +87,9 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertNotContains($userTwo->id, $keys);
-        $this->assertContains($userThree->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertNotContains($userTwo->id, $keys);
+        static::assertContains($userThree->id, $keys);
 
         // Assert success using provided index.
         /** @var \Illuminate\Database\Eloquent\Collection $keys */
@@ -85,9 +101,9 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertNotContains($userTwo->id, $keys);
-        $this->assertContains($userThree->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertNotContains($userTwo->id, $keys);
+        static::assertContains($userThree->id, $keys);
 
         // Assert undefined index exception.
         $this->expectException(Exception::class);
@@ -118,9 +134,9 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertContains($userTwo->id, $keys);
-        $this->assertNotContains($userThree->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertContains($userTwo->id, $keys);
+        static::assertNotContains($userThree->id, $keys);
 
         // Assert success using provided index.
         /** @var \Illuminate\Database\Eloquent\Collection $keys */
@@ -136,9 +152,9 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertContains($userTwo->id, $keys);
-        $this->assertNotContains($userThree->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertContains($userTwo->id, $keys);
+        static::assertNotContains($userThree->id, $keys);
 
         $keys = User::query()
             ->whereInEncrypted(
@@ -149,7 +165,7 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertEmpty($keys);
+        static::assertEmpty($keys);
     }
 
     public function testCanQueryEncryptedAttributeWithOrWhereInClause(): void
@@ -172,9 +188,9 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertContains($userTwo->id, $keys);
-        $this->assertNotContains($userThree->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertContains($userTwo->id, $keys);
+        static::assertNotContains($userThree->id, $keys);
 
         // Assert success using provided index.
         /** @var \Illuminate\Database\Eloquent\Collection $keys */
@@ -192,9 +208,9 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertContains($userOne->id, $keys);
-        $this->assertContains($userTwo->id, $keys);
-        $this->assertNotContains($userThree->id, $keys);
+        static::assertContains($userOne->id, $keys);
+        static::assertContains($userTwo->id, $keys);
+        static::assertNotContains($userThree->id, $keys);
 
         $keys = User::query()
             ->whereInEncrypted(
@@ -210,6 +226,6 @@ class QueryTest extends TestCase
             ->get()
             ->modelKeys();
 
-        $this->assertEmpty($keys);
+        static::assertEmpty($keys);
     }
 }
