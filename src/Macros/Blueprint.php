@@ -11,7 +11,7 @@ class Blueprint
 {
     public function encrypted(): Closure
     {
-        return function (string $name, ?array $indexes = null): void {
+        return function (string $name, ?array $indexes = null, ?string $after = null, bool $nullable = false): void {
             $columns = empty($indexes)
                 ? [
                     $name,
@@ -23,7 +23,13 @@ class Blueprint
                 );
 
             foreach ($columns as $column) {
-                $this->string($column);
+                $addedColumn = $this->string($column)->nullable($nullable);
+
+                if($after) {
+                    $addedColumn->after($after);
+
+                    $after = $column;
+                }
             }
 
             $this->index($columns);
@@ -32,22 +38,8 @@ class Blueprint
 
     public function nullableEncrypted(): Closure
     {
-        return function (string $name, ?array $indexes = null): void {
-            $columns = empty($indexes)
-                ? [
-                    $name,
-                    "{$name}_index",
-                ]
-                : array_merge(
-                    [$name],
-                    $indexes
-                );
-
-            foreach ($columns as $column) {
-                $this->string($column)->nullable();
-            }
-
-            $this->index($columns);
+        return function (string $name, ?array $indexes = null, ?string $after = null): void {
+            $this->encrypted($name, $indexes, $after, true);
         };
     }
 }
